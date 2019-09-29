@@ -22,17 +22,18 @@ def build_template!
   after_bundle do
     setup_gems
   end
+
+  setup_webpack
 end
 
 def add_gems
-  # Call add methods here
   add_devise
   add_dotenv
   add_foreman
+  add_faker
 end
 
 def setup_gems
-  # Call setup gem methods here
   setup_devise
   setup_dotenv
   setup_foreman
@@ -93,6 +94,15 @@ end
 
 def add_faker
   insert_into_file 'Gemfile', "gem 'faker'\n", after: /# Tools\n/
+end
+
+def setup_webpack
+  run 'mkdir app/javascript/stylesheets &&'\
+      ' touch app/javascript/stylesheets/application.scss'
+  append_to_file 'app/javascript/packs/application.js',
+                 "import '../stylesheets/application'\n"
+  gsub_file 'app/views/layouts/application.html.erb',
+            /stylesheet_link_tag/, 'stylesheet_pack_tag'
 end
 
 # This will launch the template build process
