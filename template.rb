@@ -27,11 +27,15 @@ end
 def add_gems
   # Call add methods here
   add_devise
+  add_dotenv
+  add_foreman
 end
 
 def setup_gems
   # Call setup gem methods here
   setup_devise
+  setup_dotenv
+  setup_foreman
 end
 
 def gemfile_categories
@@ -68,6 +72,22 @@ end
 def setup_dotenv
   run 'touch .env'
   append_to_file '.gitignore', ".env\n"
+end
+
+def add_foreman
+  gem_group :development do
+    gem 'foreman'
+  end
+end
+
+def setup_foreman
+  run 'touch Procfile.dev && mkdir ./tmp/pids'
+  append_to_file 'Procfile.dev' do
+    <<~RUBY
+      web: bundle exec puma -p $PORT -C config/puma.rb
+      webpacker: ./bin/webpack-dev-server
+    RUBY
+  end
 end
 
 # This will launch the template build process
