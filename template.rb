@@ -16,5 +16,13 @@ def build_template!
   confirm_rails_version
 end
 
+def add_gems
+  # Call add methods here
+end
+
+def setup_gems
+  # Call setup gems here
+end
+
 # This will launch the template build process
 build_template!
