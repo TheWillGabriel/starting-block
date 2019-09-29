@@ -11,3 +11,10 @@ def confirm_rails_version
   puts "Please install Rails #{RAILS_VERSION} to use this template. Aborting."
   exit 1
 end
+
+def build_template!
+  confirm_rails_version
+end
+
+# This will launch the template build process
+build_template!
