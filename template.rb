@@ -60,7 +60,7 @@ def setup_devise
   rails_command 'g devise:views'
   rails_command 'g devise User'
   environment 'config.action_mailer.default_url_options =
-    {host: "localhost", port: 3000}', env: 'development'
+    {host: "localhost", port: ENV["PORT"]}', env: 'development'
 end
 
 def add_dotenv
@@ -71,6 +71,7 @@ end
 
 def setup_dotenv
   run 'touch .env'
+  append_to_file '.env', 'PORT=3000'
   append_to_file '.gitignore', ".env\n"
 end
 
@@ -88,6 +89,10 @@ def setup_foreman
       webpacker: ./bin/webpack-dev-server
     RUBY
   end
+end
+
+def add_faker
+  insert_into_file 'Gemfile', "gem 'faker'\n", after: /# Tools\n/
 end
 
 # This will launch the template build process
