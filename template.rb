@@ -59,5 +59,16 @@ def setup_devise
     {host: "localhost", port: 3000}', env: 'development'
 end
 
+def add_dotenv
+  gem_group :development, :test do
+    gem 'dotenv-rails'
+  end
+end
+
+def setup_dotenv
+  run 'touch .env'
+  append_to_file '.gitignore', ".env\n"
+end
+
 # This will launch the template build process
 build_template!
