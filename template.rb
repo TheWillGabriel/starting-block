@@ -15,16 +15,23 @@ end
 def build_template!
   confirm_rails_version
 
+  gemfile_categories
   add_gems
-  setup_gems
+  run 'bundle install'
+
+  after_bundle do
+    setup_gems
+  end
 end
 
 def add_gems
   # Call add methods here
+  add_devise
 end
 
 def setup_gems
-  # Call setup gems here
+  # Call setup gem methods here
+  setup_devise
 end
 
 def gemfile_categories
@@ -38,6 +45,18 @@ def gemfile_categories
 
     RUBY
   end
+end
+
+def add_devise
+  insert_into_file 'Gemfile', "gem 'devise'\n", after: /# Tools\n/
+end
+
+def setup_devise
+  rails_command 'g devise:install'
+  rails_command 'g devise:views'
+  rails_command 'g devise User'
+  environment 'config.action_mailer.default_url_options =
+    {host: "localhost", port: 3000}', env: 'development'
 end
 
 # This will launch the template build process
