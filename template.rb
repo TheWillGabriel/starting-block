@@ -14,6 +14,9 @@ end
 
 def build_template!
   confirm_rails_version
+
+  add_gems
+  setup_gems
 end
 
 def add_gems
@@ -22,6 +25,19 @@ end
 
 def setup_gems
   # Call setup gems here
+end
+
+def gemfile_categories
+  append_to_file 'Gemfile' do
+    <<~RUBY
+      # APIs
+
+      # Frontend
+
+      # Tools
+
+    RUBY
+  end
 end
 
 # This will launch the template build process
