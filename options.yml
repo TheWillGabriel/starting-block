@@ -1,0 +1,5 @@
+skip_github: false
+skip_prompts: true
+commit_message: Initialize Rails project with starting-block
+github_user: TheWillGabriel
+same_repository_name: true

@@ -1,5 +1,7 @@
 # Rails 6 application template
-# Usage: rails new [app_name] -m https://raw.githubusercontent.com/thewillgabriel/starting-block/master/template.rb -d postgresql
+
+# Change this to 'true' and edit 'options.yml' to automatically push to GitHub
+default_options = false
 
 RAILS_VERSION = ">= 6.0.0"
 
