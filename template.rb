@@ -1,9 +1,5 @@
 # Rails 6 application template
 
-# Change this to 'true' and edit 'options.yml' to automatically push to GitHub
-DEFAULT_OPTIONS = true
-@github_config = {}
-
 RAILS_VERSION = ">= 6.0.0"
 
 def confirm_rails_version
