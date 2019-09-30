@@ -25,7 +25,6 @@ def build_template!
     setup_packs
     run 'yarn install --check-files'
     
-    github_options
     github_setup
   end
 end
@@ -235,21 +234,6 @@ end
 
 def initialize_db
   rails_command "db:drop db:create db:migrate"
-end
-
-def load_env
-  @github_config['skip_github'] = ENV['SB_SKIP_GITHUB'] if ENV['SB_SKIP_GITHUB']
-  @github_config['skip_prompts'] = ENV['SB_SKIP_PROMPTS'] if ENV['SB_SKIP_PROMPTS']
-  @github_config['commit_message'] = ENV['SB_COMMIT_MESSAGE'] if ENV['SB_COMMIT_MESSAGE']
-  @github_config['github_user'] = ENV['SB_GITHUB_USER'] if ENV['SB_GITHUB_USER']
-  @github_config['default_repo'] = ENV['SB_DEFAULT_REPO'] if ENV['SB_DEFAULT_REPO']
-end
-
-def github_options
-  if DEFAULT_OPTIONS
-    @github_config = YAML.load_file('options.yml') || {}
-    load_env
-  end
 end
 
 def prompt_skip_github?
