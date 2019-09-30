@@ -356,10 +356,11 @@ end
 def github_setup
   return if github_config['skip_github']
 
+  github_prompts
+
   user = github_config['github_user']
   repo = github_config['repository_name']
 
-  github_prompts
   git :init
   git add: '.'
   git commit: github_config['commit_message']
