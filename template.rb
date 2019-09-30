@@ -33,6 +33,7 @@ def build_template!
   static_index
   create_flash
   initialize_db
+  github_options
   github_setup
 end
 
