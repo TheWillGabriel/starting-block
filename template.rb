@@ -81,6 +81,8 @@ def setup_devise
   rails_command 'g devise User'
   environment 'config.action_mailer.default_url_options =
     {host: "localhost", port: ENV["PORT"]}', env: 'development'
+  environment 'config.action_mailer.default_url_options =
+    {host: "YOUR_DOMAIN_HERE"}', env: 'production'
 end
 
 def add_dotenv
