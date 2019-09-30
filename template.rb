@@ -260,6 +260,8 @@ def check_user
 end
 
 def prompt_default_repository
+  @app_name = @app_name.gsub('_', '-')
+
   if yes?("Use default repository? (#{@app_name})")
     @default_repository = true
   else
@@ -287,7 +289,6 @@ end
 def github_prompts
   return if prompt_skip_github?
 
-  prompt_commit
   prompt_github_user
   prompt_default_repository
   prompt_github_repository
@@ -303,7 +304,7 @@ def github_setup
 
   git :init
   git add: '.'
-  git commit: @commit_message
+  git commit: '-m "Initialize Rails project with starting-block template"'
   git remote: "add origin git@github.com:#{user}/#{repo}.git"
   git push: "-u origin master"
 end
