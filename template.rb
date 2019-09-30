@@ -1,7 +1,7 @@
 # Rails 6 application template
 
 # Change this to 'true' and edit 'options.yml' to automatically push to GitHub
-DEFAULT_OPTIONS = false
+DEFAULT_OPTIONS = true
 @github_config = {}
 
 RAILS_VERSION = ">= 6.0.0"
@@ -29,8 +29,6 @@ def build_template!
     setup_packs
     run 'yarn install --check-files'
     
-    static_index
-    # create_flash
     github_options
     github_setup
   end
@@ -239,23 +237,6 @@ def setup_font_awesome
   end
 end
 
-def static_index
-  rails_command 'g controller static index'
-  route "root to: 'static#index'"
-end
-
-def create_flash
-  insert_into_file 'app/views/layouts/application.html.erb', after: /<body>\n/ do
-    <<~RUBY
-      <div class="flash_messages">
-        <% flash.each do |key, value| %>
-          <%= content_tag :div, value, class: "flash #{key}" %>
-        <% end %>
-      </div>
-    RUBY
-  end
-end
-
 def initialize_db
   rails_command "db:drop db:create db:migrate"
 end
@@ -341,7 +322,7 @@ def check_repository_name
 end
 
 def github_prompts
-  return if @github_config['skip_prompts'] || prompt_skip_github?
+  return if prompt_skip_github?
   return if prompt_skip_prompts?
 
   prompt_commit
@@ -352,8 +333,10 @@ end
 
 def github_setup
   return if @github_config['skip_github']
-
+  
   github_prompts
+  
+  return if @github_config['skip_github']
 
   user = @github_config['github_user']
   repo = @github_config['repository_name']
