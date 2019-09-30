@@ -21,15 +21,15 @@ def build_template!
   add_gems
 
   after_bundle do
+    initialize_db
     setup_gems
     setup_webpack
     add_packs
     setup_packs
     run 'yarn install --check-files'
-
+    
     static_index
     create_flash
-    initialize_db
     github_options
     github_setup
   end
@@ -76,9 +76,9 @@ def add_devise
 end
 
 def setup_devise
-  rails_command 'g devise:install'
-  rails_command 'g devise:views'
-  rails_command 'g devise User'
+  generate 'devise:install'
+  generate 'devise:views'
+  generate 'devise', 'User'
   environment 'config.action_mailer.default_url_options =
     {host: "localhost", port: ENV["PORT"]}', env: 'development'
   environment 'config.action_mailer.default_url_options =
