@@ -1,7 +1,8 @@
 # Rails 6 application template
 
 # Change this to 'true' and edit 'options.yml' to automatically push to GitHub
-default_options = false
+DEFAULT_OPTIONS = false
+@github_config = {}
 
 RAILS_VERSION = ">= 6.0.0"
 
@@ -29,7 +30,7 @@ def build_template!
     run 'yarn install --check-files'
     
     static_index
-    create_flash
+    # create_flash
     github_options
     github_setup
   end
@@ -86,9 +87,8 @@ def setup_devise
 end
 
 def add_dotenv
-  gem_group :development, :test do
-    gem 'dotenv-rails'
-  end
+  insert_into_file 'Gemfile', "gem 'dotenv-rails'\n",
+    after: /group :development, :test do\n/
 end
 
 def setup_dotenv
@@ -98,9 +98,8 @@ def setup_dotenv
 end
 
 def add_foreman
-  gem_group :development do
-    gem 'foreman'
-  end
+  insert_into_file 'Gemfile', "gem 'foreman'\n",
+    after: / group :development do\n/
 end
 
 def setup_foreman
@@ -262,57 +261,55 @@ def initialize_db
 end
 
 def load_env
-  github_config['skip_github'] = ENV['SB_SKIP_GITHUB'] if ENV['SB_SKIP_GITHUB']
-  github_config['skip_prompts'] = ENV['SB_SKIP_PROMPTS'] if ENV['SB_SKIP_PROMPTS']
-  github_config['commit_message'] = ENV['SB_COMMIT_MESSAGE'] if ENV['SB_COMMIT_MESSAGE']
-  github_config['github_user'] = ENV['SB_GITHUB_USER'] if ENV['SB_GITHUB_USER']
-  github_config['default_repo'] = ENV['SB_DEFAULT_REPO'] if ENV['SB_DEFAULT_REPO']
+  @github_config['skip_github'] = ENV['SB_SKIP_GITHUB'] if ENV['SB_SKIP_GITHUB']
+  @github_config['skip_prompts'] = ENV['SB_SKIP_PROMPTS'] if ENV['SB_SKIP_PROMPTS']
+  @github_config['commit_message'] = ENV['SB_COMMIT_MESSAGE'] if ENV['SB_COMMIT_MESSAGE']
+  @github_config['github_user'] = ENV['SB_GITHUB_USER'] if ENV['SB_GITHUB_USER']
+  @github_config['default_repo'] = ENV['SB_DEFAULT_REPO'] if ENV['SB_DEFAULT_REPO']
 end
 
 def github_options
-  github_config = {}
-
-  if default_options
-    github_config = YAML.load_file('options.yml') || {}
+  if DEFAULT_OPTIONS
+    @github_config = YAML.load_file('options.yml') || {}
     load_env
   end
 end
 
 def prompt_skip_github?
-  github_config['skip_github'] = true if yes?("Skip GitHub?")
+  @github_config['skip_github'] = true if yes?("Skip GitHub? (yes/no)")
 end
 
 def prompt_skip_prompts?
-  github_config['skip_prompts'] = true if yes?("Use defaults for GitHub?")
+  @github_config['skip_prompts'] = true if yes?("Use defaults for GitHub? (yes/no)")
 end
 
 def prompt_commit
-  default_message = github_config['commit_message'] || 'blank'
-  github_config['commit_message'] =
+  default_message = @github_config['commit_message'] || 'blank'
+  @github_config['commit_message'] =
     ask("Commit message? (default: #{default_message}")
 
   check_commit_message
 end
 
 def check_commit_message
-  return unless github_config['commit_message'].nil? ||
-                github_config['commit_message'] == 'blank'
+  return unless @github_config['commit_message'].nil? ||
+                @github_config['commit_message'] == 'blank'
 
   puts "Commit message cannot be blank."
   prompt_commit
 end
 
 def prompt_github_user
-  default_user = github_config['github_user'] || 'none'
-  github_config['github_user'] =
+  default_user = @github_config['github_user'] || 'none'
+  @github_config['github_user'] =
     ask("GitHub username? (default: #{default_user})")
 
   check_user
 end
 
 def check_user
-  return unless github_config['github_user'].nil? ||
-                github_config['github_user'] == 'none'
+  return unless @github_config['github_user'].nil? ||
+                @github_config['github_user'] == 'none'
 
   puts "Github username required."
   prompt_github_user
@@ -320,19 +317,19 @@ end
 
 def prompt_default_repository
   if yes?("Use default repository? (#{@app_name})")
-    github_config['default_repository'] = true
+    @github_config['default_repository'] = true
   else
-    github_config['default_repository'] = false
+    @github_config['default_repository'] = false
   end
 end
 
 def prompt_github_repository
-  if github_config['default_repository']
-    github_config['repository_name'] = @app_name
+  if @github_config['default_repository']
+    @github_config['repository_name'] = @app_name
     return
   end
 
-  github_config['repository_name'] = ask("Repository name?")
+  @github_config['repository_name'] = ask("Repository name?")
   check_repository_name
 end
 
@@ -344,7 +341,7 @@ def check_repository_name
 end
 
 def github_prompts
-  return if github_config['skip_prompts'] || prompt_skip_github?
+  return if @github_config['skip_prompts'] || prompt_skip_github?
   return if prompt_skip_prompts?
 
   prompt_commit
@@ -354,16 +351,16 @@ def github_prompts
 end
 
 def github_setup
-  return if github_config['skip_github']
+  return if @github_config['skip_github']
 
   github_prompts
 
-  user = github_config['github_user']
-  repo = github_config['repository_name']
+  user = @github_config['github_user']
+  repo = @github_config['repository_name']
 
   git :init
   git add: '.'
-  git commit: github_config['commit_message']
+  git commit: @github_config['commit_message']
   git remote: "add origin git@github.com:#{user}/#{repo}.git"
   git push: "-u origin master"
 end
