@@ -256,8 +256,7 @@ def create_flash
 end
 
 def initialize_db
-  rails_command "db:create"
-  rails_command "db:migrate"
+  rails_command "db:drop db:create db:migrate"
 end
 
 def load_env
