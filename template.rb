@@ -237,40 +237,23 @@ def initialize_db
 end
 
 def prompt_skip_github?
-  @github_config['skip_github'] = true if yes?("Skip GitHub? (yes/no)")
-end
-
-def prompt_skip_prompts?
-  @github_config['skip_prompts'] = true if yes?("Use defaults for GitHub? (yes/no)")
-end
-
-def prompt_commit
-  default_message = @github_config['commit_message'] || 'blank'
-  @github_config['commit_message'] =
-    ask("Commit message? (default: #{default_message}")
-
-  check_commit_message
+  @skip_github = true if yes?("Skip GitHub? (yes/no)")
 end
 
 def check_commit_message
-  return unless @github_config['commit_message'].nil? ||
-                @github_config['commit_message'] == 'blank'
+  return unless @commit_message.nil? || @commit_message == 'blank'
 
   puts "Commit message cannot be blank."
   prompt_commit
 end
 
 def prompt_github_user
-  default_user = @github_config['github_user'] || 'none'
-  @github_config['github_user'] =
-    ask("GitHub username? (default: #{default_user})")
-
+  @github_user = ask("GitHub username?")
   check_user
 end
 
 def check_user
-  return unless @github_config['github_user'].nil? ||
-                @github_config['github_user'] == 'none'
+  return unless @github_user.nil? || @github_user == 'none'
 
   puts "Github username required."
   prompt_github_user
@@ -278,19 +261,19 @@ end
 
 def prompt_default_repository
   if yes?("Use default repository? (#{@app_name})")
-    @github_config['default_repository'] = true
+    @default_repository = true
   else
-    @github_config['default_repository'] = false
+    @default_repository = false
   end
 end
 
 def prompt_github_repository
-  if @github_config['default_repository']
-    @github_config['repository_name'] = @app_name
+  if @default_repository
+    @repository_name = @app_name
     return
   end
 
-  @github_config['repository_name'] = ask("Repository name?")
+  @repository_name = ask("Repository name?")
   check_repository_name
 end
 
@@ -312,18 +295,16 @@ def github_prompts
 end
 
 def github_setup
-  return if @github_config['skip_github']
-  
   github_prompts
   
-  return if @github_config['skip_github']
+  return if @skip_github
 
-  user = @github_config['github_user']
-  repo = @github_config['repository_name']
+  user = @github_user
+  repo = @repository_name
 
   git :init
   git add: '.'
-  git commit: @github_config['commit_message']
+  git commit: @commit_message
   git remote: "add origin git@github.com:#{user}/#{repo}.git"
   git push: "-u origin master"
 end
