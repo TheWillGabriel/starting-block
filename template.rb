@@ -18,13 +18,13 @@ def build_template!
   add_gems
 
   after_bundle do
-    initialize_db
     setup_gems
     setup_webpack
     add_packs
     setup_packs
     run 'yarn install --check-files'
     
+    initialize_db
     github_setup
   end
 end
