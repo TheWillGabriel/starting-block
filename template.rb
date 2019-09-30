@@ -286,7 +286,6 @@ end
 
 def github_prompts
   return if prompt_skip_github?
-  return if prompt_skip_prompts?
 
   prompt_commit
   prompt_github_user
