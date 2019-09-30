@@ -240,19 +240,12 @@ def prompt_skip_github?
   @skip_github = true if yes?("Skip GitHub?")
 end
 
-def check_commit_message
-  return unless @commit_message.nil? || @commit_message == 'blank'
-
-  puts "Commit message cannot be blank."
-  prompt_commit
-end
-
 def prompt_github_user
   @github_user = ask("GitHub username?")
-  check_user
+  check_user_name
 end
 
-def check_user
+def check_user_name
   return unless @github_user.nil? || @github_user == 'none'
 
   puts "Github username required."
@@ -261,7 +254,7 @@ end
 
 def prompt_default_repository
   @app_name = @app_name.gsub('_', '-')
-
+  
   if yes?("Use default repository? (#{@app_name})")
     @default_repository = true
   else
@@ -274,7 +267,7 @@ def prompt_github_repository
     @repository_name = @app_name
     return
   end
-
+  
   @repository_name = ask("Repository name?")
   check_repository_name
 end
