@@ -27,6 +27,9 @@ def build_template!
   add_packs
   setup_packs
   run 'yarn install --check-files'
+
+  static_index
+  create_flash
 end
 
 def add_gems
@@ -237,6 +240,17 @@ def static_index
   route "root to: 'static#index'"
 end
 
+def create_flash
+  insert_into_file 'app/views/layouts/application.html.erb', after: /<body>\n/ do
+    <<~RUBY
+      <div class="flash_messages">
+        <% flash.each do |key, value| %>
+          <%= content_tag :div, value, class: "flash #{key}" %>
+        <% end %>
+      </div>
+    RUBY
+  end
+end
 
 # This will launch the template build process
 build_template!
