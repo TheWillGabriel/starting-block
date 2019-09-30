@@ -30,6 +30,7 @@ def build_template!
 
   static_index
   create_flash
+  initialize_db
 end
 
 def add_gems
@@ -250,6 +251,11 @@ def create_flash
       </div>
     RUBY
   end
+end
+
+def initialize_db
+  rails_command "db:create"
+  rails_command "db:migrate"
 end
 
 # This will launch the template build process
