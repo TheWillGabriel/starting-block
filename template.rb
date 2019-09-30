@@ -26,6 +26,7 @@ def build_template!
   setup_webpack
   add_packs
   setup_packs
+  run 'yarn install --check-files'
 end
 
 def add_gems
@@ -43,10 +44,12 @@ end
 
 def add_packs
   add_bootstrap
+  add_font_awesome
 end
 
 def setup_packs
   setup_bootstrap
+  setup_font_awesome
 end
 
 def gemfile_categories
@@ -205,6 +208,28 @@ def setup_bootstrap
                    "import './bootstrap_custom.js'\n"
   insert_into_file 'app/javascript/stylesheets/application.scss',
                    "@import './bootstrap_custom.scss';\n"
+end
+
+def add_font_awesome
+  run 'yarn add @fortawesome/fontawesome-free @fortawesome/fontawesome-svg-core'\
+              ' @fortawesome/free-regular-svg-icons @fortawesome/free-solid-svg-icons'\
+              ' @fortawesome/free-brands-svg-icons'
+end
+
+def setup_font_awesome
+  insert_into_file 'app/javascript/packs/application.js' do
+    <<~JS
+      import { library, dom } from "@fortawesome/fontawesome-svg-core"
+      import { fas } from "@fortawesome/free-solid-svg-icons"
+      import { far } from '@fortawesome/free-regular-svg-icons'
+      import { fab } from '@fortawesome/free-brands-svg-icons'
+
+      library.add(fas, far, fab)
+
+      dom.watch()
+
+    JS
+  end
 end
 
 # This will launch the template build process
