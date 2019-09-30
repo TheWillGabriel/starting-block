@@ -79,10 +79,10 @@ def setup_devise
   generate 'devise:install'
   generate 'devise:views'
   generate 'devise', 'User'
-  environment 'config.action_mailer.default_url_options =
-    {host: "localhost", port: ENV["PORT"]}', env: 'development'
-  environment 'config.action_mailer.default_url_options =
-    {host: "YOUR_DOMAIN_HERE"}', env: 'production'
+  environment 'config.action_mailer.default_url_options ='\
+    '{host: "localhost", port: ENV["PORT"]}', env: 'development'
+  environment 'config.action_mailer.default_url_options ='\
+    '{host: "YOUR_DOMAIN_HERE"}', env: 'production'
 end
 
 def add_dotenv
@@ -132,7 +132,7 @@ def add_bootstrap
 end
 
 def setup_bootstrap
-  insert_into_file 'config/webpack/environment.js', after: /require\('@rails\/webpacker'\)\n/ do
+  insert_into_file 'config/webpack/environment.js', after: /require\('@rails\/webpacker'\)\n\n/ do
     <<~JS
       const webpack = require('webpack')
       environment.plugins.append(
