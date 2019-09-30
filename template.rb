@@ -19,22 +19,20 @@ def build_template!
 
   gemfile_categories
   add_gems
-  run 'bundle install'
 
   after_bundle do
     setup_gems
+    setup_webpack
+    add_packs
+    setup_packs
+    run 'yarn install --check-files'
+
+    static_index
+    create_flash
+    initialize_db
+    github_options
+    github_setup
   end
-
-  setup_webpack
-  add_packs
-  setup_packs
-  run 'yarn install --check-files'
-
-  static_index
-  create_flash
-  initialize_db
-  github_options
-  github_setup
 end
 
 def add_gems
@@ -147,10 +145,10 @@ def setup_bootstrap
     JS
   end
 
-  run 'touch app/javascript/packs/bootstrap_custom.js &&'\
-      ' touch app/javascript/stylesheets/bootstrap_custom.scss'
+  run 'touch app/javascript/packs/bootstrap_custom.js'\
+      ' app/javascript/stylesheets/bootstrap_custom.scss'
 
-  insert_into_file 'app/javascript/packs/bootstrap_custom.js' do
+  append_to_file 'app/javascript/packs/bootstrap_custom.js' do
     <<~JS
       import 'bootstrap/js/dist/alert'
       import 'bootstrap/js/dist/button'
@@ -168,7 +166,7 @@ def setup_bootstrap
 
     JS
   end
-  insert_into_file 'app/javascript/stylesheets/bootstrap_custom.scss' do
+  append_to_file 'app/javascript/stylesheets/bootstrap_custom.scss' do
     <<~SCSS
       @import '~bootstrap/scss/_functions.scss';
       @import '~bootstrap/scss/_variables.scss';
@@ -212,10 +210,10 @@ def setup_bootstrap
     SCSS
   end
 
-  insert_into_file 'app/javascript/packs/application.js',
-                   "import './bootstrap_custom.js'\n"
-  insert_into_file 'app/javascript/stylesheets/application.scss',
-                   "@import './bootstrap_custom.scss';\n"
+  append_to_file 'app/javascript/packs/application.js',
+                 "import './bootstrap_custom.js'\n"
+  append_to_file 'app/javascript/stylesheets/application.scss',
+                 "@import './bootstrap_custom.scss';\n"
 end
 
 def add_font_awesome
@@ -225,7 +223,7 @@ def add_font_awesome
 end
 
 def setup_font_awesome
-  insert_into_file 'app/javascript/packs/application.js' do
+  append_to_file 'app/javascript/packs/application.js' do
     <<~JS
       import { library, dom } from "@fortawesome/fontawesome-svg-core"
       import { fas } from "@fortawesome/free-solid-svg-icons"
