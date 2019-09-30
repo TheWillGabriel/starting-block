@@ -232,5 +232,11 @@ def setup_font_awesome
   end
 end
 
+def static_index
+  rails_command 'g controller static index'
+  route "root to: 'static#index'"
+end
+
+
 # This will launch the template build process
 build_template!
