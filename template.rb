@@ -237,7 +237,7 @@ def initialize_db
 end
 
 def prompt_skip_github?
-  @skip_github = true if yes?("Skip GitHub? (yes/no)")
+  @skip_github = true if yes?("Skip GitHub?")
 end
 
 def check_commit_message
