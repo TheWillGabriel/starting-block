@@ -23,7 +23,7 @@ def build_template!
     add_packs
     setup_packs
     run 'yarn install --check-files'
-    
+
     initialize_db
     github_setup
   end
@@ -81,7 +81,7 @@ end
 
 def add_dotenv
   insert_into_file 'Gemfile', "gem 'dotenv-rails'\n",
-    after: /group :development, :test do\n/
+                   after: /group :development, :test do\n/
 end
 
 def setup_dotenv
@@ -92,7 +92,7 @@ end
 
 def add_foreman
   insert_into_file 'Gemfile', "gem 'foreman'\n",
-    after: / group :development do\n/
+                   after: / group :development do\n/
 end
 
 def setup_foreman
@@ -124,7 +124,8 @@ def add_bootstrap
 end
 
 def setup_bootstrap
-  insert_into_file 'config/webpack/environment.js', after: /require\('@rails\/webpacker'\)\n\n/ do
+  insert_into_file 'config/webpack/environment.js',
+                   after: %r{require\('@rails\/webpacker'\)\n\n} do
     <<~JS
       const webpack = require('webpack')
       environment.plugins.append(
@@ -211,9 +212,11 @@ def setup_bootstrap
 end
 
 def add_font_awesome
-  run 'yarn add @fortawesome/fontawesome-free @fortawesome/fontawesome-svg-core'\
-              ' @fortawesome/free-regular-svg-icons @fortawesome/free-solid-svg-icons'\
-              ' @fortawesome/free-brands-svg-icons'
+  run 'yarn add @fortawesome/fontawesome-free'\
+      ' @fortawesome/fontawesome-svg-core'\
+      ' @fortawesome/free-regular-svg-icons'\
+      ' @fortawesome/free-solid-svg-icons'\
+      ' @fortawesome/free-brands-svg-icons'
 end
 
 def setup_font_awesome
@@ -233,34 +236,35 @@ def setup_font_awesome
 end
 
 def initialize_db
-  rails_command "db:drop db:create db:migrate"
+  rails_command 'db:drop db:create db:migrate'
 end
 
 def prompt_skip_github?
-  @skip_github = true if yes?("Skip GitHub?")
+  @skip_github = true if yes?('Skip GitHub?')
 end
 
 def prompt_github_user
-  @github_user = ask("GitHub username?")
+  @github_user = ask('GitHub username?')
   check_user_name
 end
 
 def check_user_name
   return unless @github_user.nil? || @github_user == 'none'
 
-  puts "Github username required."
+  puts 'Github username required.'
   prompt_github_user
 end
 
 def prompt_default_repository
-  @app_name = @app_name.gsub('_', '-')
-  
-  puts "If you haven't created the new GitHub repository yet, do so before continuing!"
-  if yes?("Use default repository? (#{@app_name})")
-    @default_repository = true
-  else
-    @default_repository = false
-  end
+  @app_name = @app_name.tr('_', '-')
+
+  puts "If you haven't created the new GitHub repository yet,"\
+       ' do so before continuing!'
+  @default_repository = if yes?("Use default repository? (#{@app_name})")
+                          true
+                        else
+                          false
+                        end
 end
 
 def prompt_github_repository
@@ -268,15 +272,15 @@ def prompt_github_repository
     @repository_name = @app_name
     return
   end
-  
-  @repository_name = ask("Repository name?")
+
+  @repository_name = ask('Repository name?')
   check_repository_name
 end
 
 def check_repository_name
   return if repository_name.present?
 
-  puts "Repository name cannot be blank"
+  puts 'Repository name cannot be blank'
   prompt_github_repository
 end
 
@@ -290,7 +294,7 @@ end
 
 def github_setup
   github_prompts
-  
+
   return if @skip_github
 
   user = @github_user
@@ -300,7 +304,7 @@ def github_setup
   git add: '.'
   git commit: '-m "Initialize Rails project with starting-block template"'
   git remote: "add origin git@github.com:#{user}/#{repo}.git"
-  git push: "-u origin master"
+  git push: '-u origin master'
 end
 
 # This will launch the template build process
