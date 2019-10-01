@@ -255,6 +255,7 @@ end
 def prompt_default_repository
   @app_name = @app_name.gsub('_', '-')
   
+  puts "If you haven't created the new GitHub repository yet, do so before continuing!"
   if yes?("Use default repository? (#{@app_name})")
     @default_repository = true
   else
