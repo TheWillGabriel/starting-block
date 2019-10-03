@@ -80,7 +80,7 @@ def setup_devise
 end
 
 def add_dotenv
-  insert_into_file 'Gemfile', "gem 'dotenv-rails'\n",
+  insert_into_file 'Gemfile', "  gem 'dotenv-rails'\n",
                    after: /group :development, :test do\n/
 end
 
@@ -91,8 +91,8 @@ def setup_dotenv
 end
 
 def add_foreman
-  insert_into_file 'Gemfile', "gem 'foreman'\n",
-                   after: / group :development do\n/
+  insert_into_file 'Gemfile', "  gem 'foreman'\n",
+                   after: /group :development do\n/
 end
 
 def setup_foreman
