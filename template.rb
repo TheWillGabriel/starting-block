@@ -16,6 +16,7 @@ def build_template!
 
   gemfile_categories
   add_gems
+  add_system_gems
 
   after_bundle do
     setup_gems
@@ -35,6 +36,10 @@ def add_gems
   add_foreman
   add_faker
   replace_sass_rails
+end
+
+def add_system_gems
+  add_system_foreman
 end
 
 def setup_gems
@@ -91,9 +96,8 @@ def setup_dotenv
   append_to_file '.gitignore', ".env\n"
 end
 
-def add_foreman
-  insert_into_file 'Gemfile', "  gem 'foreman'\n",
-                   after: /group :development do\n/
+def add_system_foreman
+  run 'gem install foreman'
 end
 
 def setup_foreman
