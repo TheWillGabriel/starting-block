@@ -34,6 +34,7 @@ def add_gems
   add_dotenv
   add_foreman
   add_faker
+  replace_sass_rails
 end
 
 def setup_gems
@@ -117,6 +118,10 @@ def setup_webpack
                  "import '../stylesheets/application'\n"
   gsub_file 'app/views/layouts/application.html.erb',
             /stylesheet_link_tag/, 'stylesheet_pack_tag'
+end
+
+def replace_sass_rails
+  gsub_file 'Gemfile', /gem 'sass-rails'.*$/, "gem 'sassc-rails'"
 end
 
 def add_bootstrap
