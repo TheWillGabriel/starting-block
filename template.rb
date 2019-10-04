@@ -33,7 +33,6 @@ end
 def add_gems
   add_devise
   add_dotenv
-  add_foreman
   add_faker
   replace_sass_rails
 end
