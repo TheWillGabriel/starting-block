@@ -105,6 +105,7 @@ def setup_foreman
     <<~RUBY
       web: bundle exec puma -p $PORT -C config/puma.rb
       webpacker: ./bin/webpack-dev-server
+      log: tail -f log/development.log
 
     RUBY
   end
