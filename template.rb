@@ -31,9 +31,10 @@ def build_template!
 end
 
 def add_gems
-  add_devise
-  add_dotenv
+  add_rspec
   add_faker
+  add_dotenv
+  add_devise
   replace_sass_rails
 end
 
@@ -42,6 +43,7 @@ def add_system_gems
 end
 
 def setup_gems
+  setup_rspec
   setup_devise
   setup_dotenv
   setup_foreman
@@ -113,6 +115,15 @@ end
 
 def add_faker
   insert_into_file 'Gemfile', "gem 'faker'\n", after: /# Tools\n/
+end
+
+def add_rspec
+  insert_into_file 'Gemfile', "  gem 'rspec-rails'\n",
+                   after: /group :development, :test do\n/
+end
+
+def setup_rspec
+  run 'rm -rf test'
 end
 
 def setup_webpack
